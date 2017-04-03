@@ -1,0 +1,133 @@
+
+Assignment : This tells the way assignments can be made in R
+```{r}
+  5->a
+  a
+  a<- 5
+  a
+  a=5
+  a
+```
+Vectors: Some basic vector operations
+
+```{r}
+    vec1 <- c(1,2,3,4,5)
+   class(vec1)
+
+   vec2<-c(TRUE,FALSE)
+   vec2
+   class(vec2)
+   vec3<-c('A','B')
+   vec3
+   class(vec3)
+   ```
+
+   cannot mix data types if mixed r will try to coerce into another data type
+
+```{r}
+vec4<-c(FALSE,2,3)
+ vec4
+```
+
+Vec operation and some basic builtin functions
+
+```{r}
+    vec1*10
+   heights=c(150,160,170)
+   heights
+   names(heights) <- c('alice','bob','charlie')
+   heights
+   heights['bob']
+   sum(heights)
+   mean(heights)
+   max(heights)
+   min(heights)
+   heights[1]
+   heights[c(1,2)]
+``` 
+
+
+another way to reference vectors
+
+
+```{r}
+newv <- c(1,2,3,4,5,6,7,8,9)
+newv[1:4]
+newv[2:4]
+v1 <- 1:10
+v1
+```
+
+boolean masking
+================
+``` {r}
+    newv>2
+    newv[newv>2]
+```
+
+
+
+ 
+
+matrix
+============
+  
+```{r}   
+   linkedin <- c(10,20,33,44,55)
+   facebook <- c(100,200,330,440,550)
+   matsocial <- c(linkedin,facebook)
+   matviews<- matrix(matsocial,byrow=T,nrow=2)
+   matviews
+   matviews * matviews
+   matviews %*% t(matviews)
+   colSums(matviews)
+```
+similary try using rowSums,rowMeans,rbind,cbind
+
+quantitative, qualitative data (categorical)
+
+nominal,
+ordinal
+
+```{r}
+   classes <- c("lkg","ukg","first","lkg")
+   fac.classes<-factor(classes,ordered=T,levels=c("lkg","ukg","first"))
+   fac.classes
+   summary(fac.classes)
+```
+   try to use cbind and rbind to rowbind and column bind matrix
+
+
+```{r}
+ mat <- matrix(1:25,byrow=T,nrow=5)
+ class(mat)
+ is.matrix(mat)
+ mat[2:3,2:3]
+ a <- c(1,2,3)
+ b <- c(4,5,6)
+ rbind(a,b)
+ class(rbind(a,b))
+```
+Simple plotting histogram use ?hist to get to see function definition
+
+```{r}
+hist((rnorm(20,1,20)))
+hist((runif(20,1,20)))
+```
+************************data frames*************************
+  
+``` {r} 
+class(ToothGrowth)
+     summary(ToothGrowth)
+
+     str(ToothGrowth)
+```
+******sapply,lapply,tapply*******
+  
+```{r}
+    sapply(1:5,function(x) x^2)
+    a <-lapply(1:3, function(x) x^2)
+    a[1]
+    unlist(a)
+    tapply(mtcars$mpg,mtcars$cyl,mean)
+```

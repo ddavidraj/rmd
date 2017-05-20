@@ -1,0 +1,161 @@
+---
+title: "rprogbasics-contd"
+author: "David Raj"
+date: "20 May 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Install and load the necessary packages if packages are not present already install using install.packages("packagename")
+```{r load packages}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(nycflights13)
+```
+dplyr basic funtions
+
+SELECT,FILTER,ARRANGE,PIPELINING(not command but redirecting using %>%),MUTATE,SUMMARIZE
+```{r dplyr commands}
+select(mtcars,mpg:hp)
+
+select(mtcars,contains("m"))
+
+select(mtcars,starts_with("m"))
+
+select(mtcars,ends_with("m"))
+
+select(flights,-(year:day))
+
+rename(flights,tail_num=tailnum)
+
+select(flights,distance,everything())
+
+filter(mtcars,cyl==6)
+
+filter(mtcars,cyl==6,hp==110)
+
+filter(mtcars,cyl %in% c(4,6))
+
+mtcars %>% select(mpg,cyl,disp) %>% filter(cyl==6)
+
+arrange(mtcars,desc(cyl,mpg))
+
+mutate(mtcars,newhp=hp+10)
+head(mtcars)
+mtcars=mutate(mtcars,newhp=hp)
+
+transmute(flights,gain=arr_delay-dep_delay)
+
+mtcars %>% group_by(cyl) %>% summarise(avg_mpg=mean(mpg))
+
+
+```
+
+GGPLOT2 basics
+This document will discuss 1) Scatter plot
+                           2) Bar plot
+                           3) lineplot
+                           4) boxplot
+                           
+There are different ways of plotting the best one is the grammer of graphics using ggplot2 , in addition
+there are other ways like base plotting ,lattice plotting and quick way using qplot
+
+
+```{r ggplot commands}
+ggplot(data=mtcars,aes(x=wt,y=mpg,col=cyl)) + geom_point()
+ggplot(data=mtcars,aes(x=wt,y=mpg,col=cyl)) + geom_point(size=5)
+ggplot(data=mtcars,aes(x=wt,y=mpg,col=factor(cyl))) + geom_point(size=5)
+
+ggplot(data=mtcars,aes(x=wt,y=mpg,col=factor(hp))) + geom_point(size=5)
+
+ggplot(data=mtcars,aes(x=wt,y=mpg,col=hp)) + geom_point(size=5)
+
+ggplot(data=mtcars,aes(x=wt,y=mpg,col=hp)) + geom_point(size=5)+scale_color_gradient(low="blue",high="red")
+
+ggplot(data=mtcars,aes(x=wt,y=mpg,col=factor(cyl))) + geom_point(size=5)+facet_grid(cyl~.)
+
+ggplot(data=iris,aes(x=Sepal.Length,y=Petal.Length,col=Species))+ geom_point(size=5)
+
+ggplot(data=iris,aes(x=Sepal.Length))+geom_histogram()
+
+ggplot(data=iris,aes(x=Sepal.Length))+geom_histogram(binwidth=0.1)
+
+ggplot(data=iris,aes(x=Sepal.Length,fill=Species))+geom_histogram(binwidth=0.2)
+
+ggplot(data=iris,aes(x=Sepal.Length,fill=Species))+geom_histogram(binwidth=0.2,position="dodge")
+
+ggplot(data=iris,aes(x=Sepal.Length,fill=Species))+geom_histogram(binwidth=0.2,position="fill")
+
+posn_d=position_dodge(0.2)
+
+ggplot(data=mtcars,aes(x=cyl,fill=am))+geom_bar(position=posn_d)
+
+ggplot(data=mtcars,aes(x=cyl,fill=am))+geom_bar(position=posn_d,alpha=0.6)
+
+ggplot(mtcars, aes(mpg, col = cyl)) +  geom_freqpoly(binwidth = 1)
+
+head(economics)
+
+ggplot(economics, aes(x = date, y = unemploy)) +geom_line()
+ggplot(economics, aes(x = date, y = unemploy/pop)) +geom_line()
+
+sal= c(1,2,5,6,5,4,10)
+
+boxplot(sal)
+
+```
+In the scatter plot 1 though the cylinder variable takes values 4,6 and 8 the values are shown as continous
+in the legend this is corrected in the subsequent plots by applying the factor of the variable
+bar plot is generally used to get the frequency of occurence or data distribution.
+Line plot is mostly used for time series data. Box plot is another simple way of getting the data distribution also 
+getting the outliers. review the data and the plots and they are self explanatory
+
+TIDY DATA: using some of the tidy verse package commands we can clean the data to get it into popular tabular format.
+GATHER is database equivalent of unpivot
+SPREAD is database equivalent of pivot
+SEPERATE to split
+UNITE to concatenate
+
+
+```{r tidyverse commands}
+table2
+table3
+table4a
+table5
+table4a %>% gather(`1999`,`2000`,key="year",value="population")
+table2 %>% spread(key=type,value=count)
+table3 %>% separate(rate,into=c("cases","population"),sep="/")
+table5 %>% unite(nyear,century,year,sep="")
+
+```
+
+Joins using dplyr - Lets create some dummy tables and issue inner and outer joins.
+
+```{r dplyr join commands}
+x = tribble(~key,~val_x,1,"x1",2,"x2",3,"x3")
+y = tribble(~key,~val_y,1,"y1",2,"y2",4,"y4")
+x %>% left_join(y,by="key")
+x %>% right_join(y,by="key")
+x %>% full_join(y,by="key")
+x %>% inner_join(y,by="key")
+flights2 <- flights %>% select(-origin,-dest) %>% left_join(airlines,by="carrier")
+topdest <- flights %>% count(dest,sort=TRUE) %>% head(10)
+topdestfullname <- topdest %>% left_join(airports,by=c("dest"="faa"))
+flights %>% semi_join(topdest)
+flights %>% anti_join(planes,by="tailnum") %>% count(tailnum,sort=TRUE)
+```
+
+These commands are self explanatory. This concludes basics of dplyr,ggplot2,tidyverse 3 crucial packages in
+R in addition to the base package. This will help to do lot of cleaning, transformation and visualization of data.
+
+
+
+
+
+
+
+
+
